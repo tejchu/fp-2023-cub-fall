@@ -38,7 +38,7 @@ main = defaultMain
   , bench "front" $ whnf benchmarkFront filledQueue
   ]
 
--- Create a sample queue with 10000 elements
+-- sample queues
 sampleQueue :: BankersQueue Int
 sampleQueue = foldr enqueueElement emptyQueue [1..10000]
 
