@@ -21,7 +21,7 @@ main = defaultMain
   [ bench "enqueue" $ whnf (benchmarkEnqueue 10000) emptyQueue
   ]
 
--- Create a sample queue with 10000 elements
+-- sample queues
 sampleQueue :: Queue Int
 sampleQueue = foldr enqueueElement createEmptyQueue [1..10000]
 
