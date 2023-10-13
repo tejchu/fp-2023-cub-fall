@@ -9,7 +9,6 @@ import RealTimeQueue
 import PhysicistQueue
 import Prelude hiding (head,tail)
 
-filteredNumbers f = filter f [0..100000]::[Int]
 
 main :: IO ()
 main = defaultMain [
@@ -25,4 +24,4 @@ main = defaultMain [
         bench "Dequeue in Physicist's Queue" $ whnf (foldl (\q x -> tail q) (foldl enqueue (createEmpty::PhysicistQueue Int) ([0..5000]::[Int])))  ([0..5000]::[Int]),
         bench "Dequeue in Real-Time Queue" $ whnf (foldl (\q x -> tail q) (foldl enqueue (createEmpty::RealTimeQueue Int) ([0..5000]::[Int])))  ([0..5000]::[Int])
     ]
-    ]
+  ]
