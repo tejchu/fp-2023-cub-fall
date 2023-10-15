@@ -1,0 +1,22 @@
+cabal-version:      3.0
+name:               hw02
+version:            0.1.0.0
+license:            MIT
+license-file:       LICENSE
+author:             tejchu
+maintainer:         tstefanovs@jacobs-university.de
+category:           Development
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+common warnings
+    ghc-options: -Wall
+
+executable hw02
+    import:           warnings
+
+    main-is:          BankersDeque.hs
+    other-modules:    Deque
+    -- other-extensions:
+    build-depends:    base ^>=4.17.0.0, containers, hspec, unordered-containers, hashable
+    hs-source-dirs:   app
+    default-language: Haskell2010

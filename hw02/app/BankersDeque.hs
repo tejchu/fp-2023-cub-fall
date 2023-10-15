@@ -11,13 +11,13 @@ module BankersDeque (module Deque, BankersDeque) where
             j = lenf+lenr-i
             f = take i frontList
             r = revList ++ reverse (drop i frontList)
-        in BD i f j r
+        in BD f i r j
       else if lenr > c*lenf + 1 then
         let j = (lenf+lenr) `div` 2
             i = lenf+lenr-j
             r = take j revList
             f = frontList ++ reverse (drop j revList)
-        in BD i f j r
+        in BD f i r j
       else q
 
   instance Deque BankersDeque where
