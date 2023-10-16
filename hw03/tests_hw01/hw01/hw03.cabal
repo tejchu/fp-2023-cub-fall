@@ -1,0 +1,33 @@
+cabal-version:      3.0
+name:               hw01
+version:            0.1.0.0
+-- synopsis:
+-- description:
+license:            MIT
+license-file:       LICENSE
+author:             tejchu
+maintainer:         tstefanovs@jacobs-university.de
+-- copyright:
+category:           Development
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+-- extra-source-files:
+
+common warnings
+    ghc-options: -Wall
+
+executable hw01
+    import:           warnings
+    main-is:          Main.hs
+    other-modules:    BankersQueue
+        BankersQueueTest
+        PhysicistQueueTest
+        PureQueueTest
+        Queue
+        RealTimeQueueTest
+    -- exposed-modules:
+      
+    -- other-extensions:
+    build-depends:    base ^>=4.17.0.0, criterion, hspec
+    hs-source-dirs:   src app test
+    default-language: Haskell2010
