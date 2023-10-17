@@ -36,5 +36,5 @@ module BootstrappedHeap where
 
     fromList :: Ord a => [a] -> BootstrappedHeap a
     fromList [] = Empty
-    fromList xs = insertAll xs Empty
+    fromList xs = NonEmpty (SBH.fromList xs)
 

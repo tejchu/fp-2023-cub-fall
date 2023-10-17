@@ -1,7 +1,7 @@
 -- TODO: 
 -- Create SkewBinomialHeap instance of heap
 
-module SkewBinomialHeap (SkewBinomialHeap, createEmpty, isEmpty, merge, insert, insertAll, deleteMin, findMin) where
+module SkewBinomialHeap (SkewBinomialHeap, createEmpty, isEmpty, merge, insert, insertAll, deleteMin, findMin, fromList) where
 
 data Tree a = Node { rank :: Int, root :: a, singles :: [a], children :: [Tree a] } deriving (Show, Eq, Ord)
 type SkewBinomialHeap a = [Tree a]
@@ -85,3 +85,7 @@ isEmpty _ = False
 
 singleton :: Ord a => a -> SkewBinomialHeap a
 singleton x = [Node 0 x [] []]
+
+fromList :: Ord a => [a] -> SkewBinomialHeap a
+fromList [] = createEmpty
+fromList xs = insertAll xs createEmpty 
