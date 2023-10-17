@@ -1,7 +1,7 @@
 module Tree1 where 
   
-data Color = R | B deriving Show
-data Tree a = E | T Color (Tree a) a (Tree a) deriving Show
+data Color = R | B deriving (Show, Eq)
+data Tree a = E | T Color (Tree a) a (Tree a) deriving (Show, Eq)
 
 member :: (Ord a) => a -> Tree a -> Bool
 member x E    = False
