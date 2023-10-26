@@ -2,10 +2,6 @@ module Test.PhysicistQueue where
 
 import Test.Tasty
 import Test.Tasty.HUnit hiding (assert)
-import Hedgehog
-import qualified Hedgehog.Gen as Gen
-import qualified Hedgehog.Range as Range
-import Test.Tasty.Hedgehog
 import PhysicistQueue
 import Prelude hiding (head,tail)
 
@@ -46,49 +42,10 @@ tailTests = testGroup "tail"
       head queue' @?= 2
   ]
 
--- Property-based testing
-genIntRange :: Gen Int
-genIntRange = Gen.int (Range.linear 1 100)
-
-genIntList :: Gen [Int]
-genIntList = Gen.list (Range.linear 0 20) genIntRange
-
-prop_enqueue :: Property
-prop_enqueue = property $ do
-  x <- forAll $ genIntRange
-  y <- forAll $ genIntRange
-  let q = createEmpty :: PhysicistQueue Int
-  let q' = enqueue (enqueue q x) y
-  let z = head q'
-  z === x
-
-prop_tail :: Property
-prop_tail = property $ do
-  x <- forAll $ genIntRange
-  y <- forAll $ genIntRange
-  let q = createEmpty :: PhysicistQueue Int
-  let q' = enqueue (enqueue q x) y
-  let q'' = tail q'
-  let z = head q''
-  z === y
-
-prop_isEmpty :: Property
-prop_isEmpty = property $ do
-  xs <- forAll genIntList
-  let queue = createEmpty :: PhysicistQueue Int
-  let q = foldl enqueue queue xs
-  let isEmptyResult = isEmpty q
-  if null xs 
-      then assert $ isEmptyResult
-      else assert $ not $ isEmptyResult
+-- Property-based tests for this queue now moved to PropertyBasedTests.hs
 
 unitTests :: [TestTree]
 unitTests = [isEmptyTests
   , enqueueTests
   , headTests
   , tailTests]
-
-props = [
-    testProperty "prop_enqueue" prop_enqueue,
-    testProperty "prop_tail" prop_tail,
-    testProperty "prop_isEmpty" prop_isEmpty]
