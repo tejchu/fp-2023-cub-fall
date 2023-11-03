@@ -148,6 +148,28 @@ pLet = do
   Let <$> (letKW *> ident) <*> (equals *> pLambdaTerm) <*> (inKW *> pLambdaTerm)
   <?> "let binding"
 
+-- add parsers for arithmetic
+pAdd :: Parser (Term String)
+pAdd = 
+  Add <$> (pLambdaTerm <* symbol "+") <*> pLambdaTerm
+  <?> "addition"
+
+pSub :: Parser (Term String)
+pSub = 
+  Sub <$> (pLambdaTerm <* symbol "-") <*> pLambdaTerm
+  <?> "subtraction"
+
+pMul :: Parser (Term String)
+pMul = 
+  Mul <$> (pLambdaTerm <* symbol "*") <*> pLambdaTerm
+  <?> "multiplication"
+
+pDiv :: Parser (Term String)
+pDiv = 
+  Div <$> (pLambdaTerm <* symbol "/") <*> pLambdaTerm
+  <?> "division"
+
+
 pType :: Parser Type
 pType =
     makeExprParser pBaseType [[binary "->" Arrow]]
