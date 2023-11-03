@@ -51,6 +51,14 @@ false = kw "False" *> return False <?> "False"
 ifKW :: Parser Text
 ifKW = kw "If" <?> "If"
 
+-- add "let" for >let< x = term in term
+letKW :: Parser Text
+letKW = kw "Let" <?> "Let"
+
+-- add "in" for let x = term >in< term //equals added lower
+inKW :: Parser Text
+inKW = kw "in" <?> "in"
+
 thenKW :: Parser Text
 thenKW = kw "Then" <?> "then"
 
@@ -71,6 +79,22 @@ ident = lexeme ((:) <$> lowerChar <*> many alphaNumChar <?> "variable")
 parens :: Parser a -> Parser a
 parens = between (symbol "(") (symbol ")")
 
+-- add equals for let x >=< term in term
+equals :: Parser Text
+equals = symbol "=" <?> "equal sign"
+
+-- add the ops
+addOp :: [[Operator Parser (Term String)]]
+addOp = [[binary "+" Add, binary "-" Sub]]
+  where
+    binary name f = InfixL (f <$ symbol name)
+
+mulOp :: [[Operator Parser (Term String)]]
+mulOp = [[binary "*" Mul, binary "/" Div]]
+  where
+    binary name f = InfixL (f <$ symbol name)
+-- not sure if these are correct yet
+
 pLambdaTerm :: Parser (Term String)
 pLambdaTerm = choice
   [ pVar
@@ -78,6 +102,7 @@ pLambdaTerm = choice
   , pApplication
   , pBoolLit
   , pIf
+  , pLet
   ]
   <?> "lambda term"
 
@@ -104,6 +129,13 @@ pIf :: Parser (Term String)
 pIf =
   If <$> (ifKW *> pLambdaTerm) <*> (thenKW *> pLambdaTerm) <*> (elseKW *> pLambdaTerm)
   <?> "if expression"
+
+-- let binding
+pLet :: Parser (Term String)
+pLet = do
+--Let (x) = term (in) term
+  Let <$> (letKW *> ident) <*> (equals *> pLambdaTerm) <*> (inKW *> pLambdaTerm)
+  <?> "let binding"
 
 pType :: Parser Type
 pType =
