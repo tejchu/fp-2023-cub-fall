@@ -68,6 +68,10 @@ elseKW = kw "Else" <?> "Else"
 boolKW :: Parser Text
 boolKW = kw "Bool" <?> "Bool"
 
+-- add intKW for int type
+intKW :: Parser Text
+intKW = kw "Int" <?> "Int"
+
 -- abstraction :: λ x : T . b
 
 lambda :: Parser Text
@@ -101,6 +105,7 @@ pLambdaTerm = choice
   , pAbstraction
   , pApplication
   , pBoolLit
+  , pIntLit 
   , pIf
   , pLet
   ]
@@ -125,6 +130,12 @@ pBoolLit =
   BoolLit <$> (true <|> false)
   <?> "boolean literal"
 
+-- add parser for integer literals
+pIntLit :: Parser (Term String)
+pIntLit = 
+  IntLit <$> integer 
+  <?> "integer literal"
+
 pIf :: Parser (Term String)
 pIf =
   If <$> (ifKW *> pLambdaTerm) <*> (thenKW *> pLambdaTerm) <*> (elseKW *> pLambdaTerm)
@@ -144,14 +155,19 @@ pType =
   where
     binary name f = InfixR (f <$ symbol name)
 
+-- update base type parser to include int type
 pBaseType :: Parser Type
-pBaseType = pTyVar <|> pBoolType <|> parens pType <?> "base type"
+pBaseType = pTyVar <|> pBoolType <|> pIntType <|> parens pType <?> "base type"
 
 pTyVar :: Parser Type
 pTyVar = TyVar <$> ident <?> "type variable"
 
 pBoolType :: Parser Type
 pBoolType = Bool <$ boolKW <?> "Bool type tag"
+
+-- add parser type for ints
+pIntType :: Parser Type
+pIntType = Int <$ intKW <?> "Int type tag"
 
 parseEof :: Parser a -> Text -> Either (ParseErrorBundle Text Void) a
 parseEof p = runParser (p <* eof) ""
