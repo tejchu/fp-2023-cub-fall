@@ -36,4 +36,7 @@ typeCheck env (If c t e) = do
         then Right tt
         else Left "Branches in 'if' statement have different types"
     _ -> Left "Condition in 'if' statement is not of type Bool"
-
+-- Let x = 5 in term
+typeCheck env (Let x m n) = do
+  t1 <- typeCheck env m
+  typeCheck (M.insert x t1 env) n
