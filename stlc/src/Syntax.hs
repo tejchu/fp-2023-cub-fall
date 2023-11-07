@@ -44,6 +44,7 @@ instance Show (Term String) where
   show (BoolLit b) = printf "%s" (show b)
   show (If c t e) = printf "if %s then %s else %s" (show c) (show t) (show e)
   show (IntLit i) = printf "%s" (show i) -- add show for ints
+  show (Let x t1 t2) = printf "let %s = %s in %s" x (show t1) (show t2)
   show (Add t1 t2) = printf "(%s) + (%s)" (show t1) (show t2) -- add show for arithmetic ops
   show (Sub t1 t2) = printf "(%s) - (%s)" (show t1) (show t2)
   show (Mul t1 t2) = printf "(%s) * (%s)" (show t1) (show t2)
