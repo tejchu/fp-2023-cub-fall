@@ -6,14 +6,21 @@ import Control.Monad (guard)
 
 type Env = M.Map String Type
 
-typeCheckEmpty :: Term String -> Either String Type
+data Err
+  = VarNotInEnv String
+  | TypeMismatch
+  | BranchesWDiffTypes
+  | CondNotBool
+  deriving Show
+
+typeCheckEmpty :: Term String -> Either Err Type
 typeCheckEmpty = typeCheck M.empty
 
-typeCheck :: Env -> Term String -> Either String Type
+typeCheck :: Env -> Term String -> Either Err Type
 typeCheck env (Var v) =
   case M.lookup v env of
     Just t -> Right t
-    Nothing -> Left $ "Variable '" ++ v ++ "' not in environment"
+    Nothing -> Left $ VarNotInEnv v
 typeCheck env (Abs x t b) = do
   let env' = M.insert x t env
   t1 <- typeCheck env' b
@@ -23,7 +30,7 @@ typeCheck env (App m n) = do
   t2 <- typeCheck env n
   case t1 of
     Arrow t11 t12 | t2 == t11 -> Right t12
-    _ -> Left "Type mismatch in application"
+    _ -> Left $ TypeMismatch
 typeCheck _ (BoolLit _) =
   Right Bool
 typeCheck env (If c t e) = do
@@ -34,8 +41,8 @@ typeCheck env (If c t e) = do
       et <- typeCheck env e
       if tt == et
         then Right tt
-        else Left "Branches in 'if' statement have different types"
-    _ -> Left "Condition in 'if' statement is not of type Bool"
+        else Left $ BranchesWDiffTypes
+    _ -> Left CondNotBool
 -- Let x = 5 in term
 typeCheck env (Let x m n) = do
   t1 <- typeCheck env m
