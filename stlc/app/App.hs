@@ -60,10 +60,11 @@ transform (Args transformation input) = do
 printEither :: Show a => Either String a -> IO ()
 printEither (Left err) = do
   putStrLn "Error"
-  putStrLn err
+  putStrLn (show err)
 printEither (Right x) = do
   putStrLn "Ok"
   print x
+
 
 runAction :: Args -> IO ()
 runAction args = do
