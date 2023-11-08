@@ -1,26 +1,22 @@
 module TypeCheck where
 
 import Syntax
+import Error
 import qualified Data.Map as M
 import Control.Monad (guard)
 
 type Env = M.Map String Type
 
-data Err
-  = VarNotInEnv String
-  | TypeMismatch
-  | BranchesWDiffTypes
-  | CondNotBool
-  deriving Show
 
-typeCheckEmpty :: Term String -> Either Err Type
+
+typeCheckEmpty :: Term String -> Either LambdaError Type
 typeCheckEmpty = typeCheck M.empty
 
-typeCheck :: Env -> Term String -> Either Err Type
+typeCheck :: Env -> Term String -> Either LambdaError Type
 typeCheck env (Var v) =
   case M.lookup v env of
     Just t -> Right t
-    Nothing -> Left $ VarNotInEnv v
+    Nothing -> Left $ TypeCheckError $ VarNotInEnv v
 typeCheck env (Abs x t b) = do
   let env' = M.insert x t env
   t1 <- typeCheck env' b
@@ -30,7 +26,7 @@ typeCheck env (App m n) = do
   t2 <- typeCheck env n
   case t1 of
     Arrow t11 t12 | t2 == t11 -> Right t12
-    _ -> Left $ TypeMismatch
+    _ -> Left $ TypeCheckError TypeMismatch
 typeCheck _ (BoolLit _) =
   Right Bool
 typeCheck env (If c t e) = do
@@ -41,8 +37,8 @@ typeCheck env (If c t e) = do
       et <- typeCheck env e
       if tt == et
         then Right tt
-        else Left $ BranchesWDiffTypes
-    _ -> Left CondNotBool
+        else Left $ TypeCheckError BranchesWDiffTypes
+    _ -> Left $ TypeCheckError CondNotBool
 -- Let x = 5 in term
 typeCheck env (Let x m n) = do
   t1 <- typeCheck env m

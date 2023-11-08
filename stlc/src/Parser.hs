@@ -1,3 +1,4 @@
+
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use <$>" #-}
@@ -12,11 +13,15 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import Control.Monad.Combinators.Expr
 
 import Syntax
-
+import TypeCheck
+import Error
 -- parser :: "...." -> AST
 -- parser combinators ::  "prefix .. postfix" -> (AST, " postfix" )
 
 type Parser = Parsec Void Text
+
+
+
 
 sc :: Parser ()
 sc = L.space
@@ -199,8 +204,9 @@ mapLeft f (Left x) = Left (f x)
 mapLeft _ (Right x) = Right x
 
 -- I am not sure where else to expose the error
-parseLambdaTerm :: Text -> Either String (Term String)
+parseLambdaTerm :: Text -> Either LambdaError (Term String)
 parseLambdaTerm input =
   case parseEof pLambdaTerm input of
-    Left err -> Left $ "Failed to parse lambda term: " ++ errorBundlePretty err
+    Left err -> Left $ ParseError (errorBundlePretty err)
     Right term -> Right term
+
