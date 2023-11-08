@@ -5,6 +5,7 @@ import Options.Applicative
 import Parser (parseLambdaTerm)
 import TypeCheck
 import Data.Text (Text)
+import Error
 
 data Transformation
   = TypeCheck
@@ -57,7 +58,7 @@ transform :: Args -> IO Action
 transform (Args transformation input) = do
   return $ Action transformation input
 
-printEither :: Show a => Either String a -> IO ()
+printEither :: Show a => Either LambdaError a -> IO ()
 printEither (Left err) = do
   putStrLn "Error"
   putStrLn (show err)
@@ -65,13 +66,15 @@ printEither (Right x) = do
   putStrLn "Ok"
   print x
 
-
 runAction :: Args -> IO ()
 runAction args = do
   action <- transform args
   case transformation action of
-    TypeCheck ->
-      printEither $ typeCheckEmpty <$> parseLambdaTerm (input action)
+    TypeCheck -> do
+      let parsed = parseLambdaTerm (input action)
+      case parsed of
+        Left err -> putStrLn $ show err
+        Right term -> printEither $ typeCheckEmpty term
     Parse ->
       printEither $ parseLambdaTerm (input action)
 
