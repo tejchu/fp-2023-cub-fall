@@ -101,13 +101,13 @@ mulOp = [[binary "*" Mul, binary "/" Div]]
 
 pLambdaTerm :: Parser (Term String)
 pLambdaTerm = choice
-  [ pVar
-  , pAbstraction
-  , pApplication
-  , pBoolLit
-  , pIntLit 
-  , pIf
-  , pLet
+  [ pVar <?> "variable error"
+  , pAbstraction <?> "abstraction error"
+  , pApplication <?> "application error"
+  , pBoolLit <?> "boolean literal error"
+  , pIntLit <?> "integer literal error"
+  , pIf <?> "if expression error"
+  , pLet <?> "let binding error"
   ]
   <?> "lambda term"
 
@@ -198,6 +198,9 @@ mapLeft :: (a -> b) -> Either a c -> Either b c
 mapLeft f (Left x) = Left (f x)
 mapLeft _ (Right x) = Right x
 
+-- I am not sure where else to expose the error
 parseLambdaTerm :: Text -> Either String (Term String)
 parseLambdaTerm input =
-  mapLeft errorBundlePretty $ parseEof pLambdaTerm input
+  case parseEof pLambdaTerm input of
+    Left err -> Left $ "Failed to parse lambda term: " ++ errorBundlePretty err
+    Right term -> Right term
