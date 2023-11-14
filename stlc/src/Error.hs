@@ -7,11 +7,11 @@ import Text.Megaparsec
 data LambdaError
   = ParseError String
   | TypeCheckError Err
-  deriving Show
+  deriving (Show, Eq)
 
 data Err
   = VarNotInEnv String
   | TypeMismatch
   | BranchesWDiffTypes
   | CondNotBool
-  deriving Show
+  deriving (Show, Eq)
