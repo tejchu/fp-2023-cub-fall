@@ -20,9 +20,6 @@ import Error
 
 type Parser = Parsec Void Text
 
-
-
-
 sc :: Parser ()
 sc = L.space
   space1
@@ -62,7 +59,7 @@ letKW = kw "Let" <?> "Let"
 
 -- add "in" for let x = term >in< term //equals added lower
 inKW :: Parser Text
-inKW = kw "in" <?> "in"
+inKW = kw "In" <?> "In"
 
 thenKW :: Parser Text
 thenKW = kw "Then" <?> "then"
