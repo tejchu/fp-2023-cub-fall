@@ -89,6 +89,12 @@ parens = between (symbol "(") (symbol ")")
 equals :: Parser Text
 equals = symbol "=" <?> "equal sign"
 
+addition :: Parser Text
+addition =  lexeme (symbol "+" <?> "addition")
+
+multiplication :: Parser Text
+multiplication = symbol "*" <?> "multiplication"
+
 -- add the ops
 addOp :: [[Operator Parser (Term String)]]
 addOp = [[binary "+" Add, binary "-" Sub]]
@@ -110,6 +116,7 @@ pLambdaTerm = choice
   , pIntLit <?> "integer literal error"
   , pIf <?> "if expression error"
   , pLet <?> "let binding error"
+  , pAdd <?> "addition error"
   ]
   <?> "lambda term"
 
@@ -152,24 +159,14 @@ pLet = do
 
 -- add parsers for arithmetic
 pAdd :: Parser (Term String)
-pAdd = 
-  Add <$> (pLambdaTerm <* symbol "+") <*> pLambdaTerm
+pAdd = do
+  Add <$> (pLambdaTerm) <* addition *> (pLambdaTerm)
   <?> "addition"
 
-pSub :: Parser (Term String)
-pSub = 
-  Sub <$> (pLambdaTerm <* symbol "-") <*> pLambdaTerm
-  <?> "subtraction"
-
 pMul :: Parser (Term String)
-pMul = 
-  Mul <$> (pLambdaTerm <* symbol "*") <*> pLambdaTerm
+pMul = do
+  Mul <$> (pLambdaTerm <* multiplication) <*> pLambdaTerm
   <?> "multiplication"
-
-pDiv :: Parser (Term String)
-pDiv = 
-  Div <$> (pLambdaTerm <* symbol "/") <*> pLambdaTerm
-  <?> "division"
 
 
 pType :: Parser Type
@@ -181,7 +178,7 @@ pType =
 
 -- update base type parser to include int type
 pBaseType :: Parser Type
-pBaseType = pTyVar <|> pBoolType <|> pIntType <|> parens pType <?> "base type"
+pBaseType = pTyVar <|> pBoolType <|> parens pIntType <|> parens pType <?> "base type"
 
 pTyVar :: Parser Type
 pTyVar = TyVar <$> ident <?> "type variable"
