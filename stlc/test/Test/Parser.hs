@@ -23,8 +23,15 @@ unit_parser_abs = do
 unit_parser_app = do
   appTests
 
+unit_parser_let = do
+  letTests
 
 
+
+letTests = do
+  parseLambdaTerm "Let x = True In x" @?= Right (Let "x" (BoolLit True) (Var "x"))
+
+  
   
 boolLitTests = do
       parseLambdaTerm "True" @?= Right (BoolLit True)
