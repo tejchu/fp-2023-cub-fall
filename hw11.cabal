@@ -67,7 +67,7 @@ executable fp-2023-cub-fall-tea
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.17.0.0, containers, QuickCheck
+    build-depends:    base ^>=4.17.0.0, containers, QuickCheck, hspec
 
     -- Directories containing source files.
     hs-source-dirs:   app
