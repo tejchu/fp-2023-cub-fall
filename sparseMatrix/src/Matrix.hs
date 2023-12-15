@@ -30,8 +30,7 @@ instance (Eq bound, Integral bound, Eq a, Num a) => Matrix (QuadTree bound) a wh
 
   sub m1 m2 = add m1 (neg m2)
 
-  neg (Cell b v) = Cell b (-v)
-  neg (Quad b nw ne sw se) = Quad b (neg nw) (neg ne) (neg sw) (neg se)
+  neg m = scalarMult (-1) m
 
   mult (Cell b1 x) m2 = scalarMult x m2
   mult m1 (Cell b2 y) = scalarMult y m1
