@@ -147,6 +147,7 @@ unit_multiplication = do
   matrix1 `mult` matrix2 @?= m2x2 19 22 43 50
   matrix1 `mult` matrix3 @?= m2x2 11 (-17) 23 (-37)
   matrix2 `mult` matrix3 @?= m2x2 35 (-57) 47 (-77) 
+  -- I cannot figure out what goes wrong for this test case.
   examplematrix1 `mult` examplematrix2 @?= examplematrix1mult2
   m16 `mult` m16 @?= m16multm16
 
