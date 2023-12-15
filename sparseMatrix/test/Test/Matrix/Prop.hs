@@ -86,6 +86,13 @@ hprop_assocAdd = property $ do
   m3 <- forAll $ genMatrix b 10
   (m1 `add` m2) `add` m3 === m1 `add` (m2 `add` m3)
 
+hprop_commMult :: Property
+hprop_commMult = property $ do
+  b <- forAll $ genNat 5
+  m1 <- forAll $ genMatrix b 10
+  m2 <- forAll $ genMatrix b 10
+  m1 `mult` m2 === m2 `mult` m1
+
 hprop_leftIdentityAdd :: Property
 hprop_leftIdentityAdd = property $ do
   b <- forAll $ genNat 5
