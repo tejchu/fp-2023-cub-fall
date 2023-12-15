@@ -22,11 +22,5 @@ instance Convert a a where
 class Add a b where
   add :: a -> b -> a
 
-instance Add (Weight Kilograms) (Weight Kilograms) where
-  add (Weight kg1) (Weight kg2) = Weight $ kg1 + kg2
-
-instance Add (Weight Pounds) (Weight Pounds) where
-  add (Weight lb1) (Weight lb2) = Weight $ lb1 + lb2
-
-instance Add (Weight Poods) (Weight Poods) where
-  add (Weight pood1) (Weight pood2) = Weight $ pood1 + pood2
+instance Add (Weight unit) (Weight unit) where
+  add (Weight w1) (Weight w2) = Weight $ w1 + w2
